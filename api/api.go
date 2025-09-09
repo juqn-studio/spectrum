@@ -176,6 +176,7 @@ func (a *API) handle(c *Client, id int64) {
 			return
 		default:
 		}
+		a.logger.Info("Total sessions loaded", "count", len(a.registry.GetSessions()))
 
 		pk, err := c.ReadPacket()
 		if err != nil {
