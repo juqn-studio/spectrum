@@ -176,7 +176,7 @@ func (a *API) handle(c *Client, id int64) {
 			return
 		default:
 		}
-		a.logger.Info("Current address", "addr", a.listener.Addr().String())
+		a.logger.Info("Current address", a.listener.Addr().String())
 		a.logger.Info("Total sessions loaded", "count", len(a.registry.GetSessions()))
 
 		pk, err := c.ReadPacket()
