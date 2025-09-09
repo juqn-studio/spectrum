@@ -43,6 +43,8 @@ func NewAPI(registry *session.Registry, logger *slog.Logger, authentication Auth
 		logger: logger,
 		closed: make(chan struct{}),
 	}
+	a.Players()
+
 	a.RegisterHandler(packet.IDKick, func(_ *Client, pk packet.Packet) {
 		username := pk.(*packet.Kick).Username
 		reason := pk.(*packet.Kick).Reason
@@ -133,6 +135,12 @@ func (a *API) Close() error {
 	return nil
 }
 
+func (a *API) Players() {
+	for {
+		a.logger.Info("", "count", len(a.registry.GetSessions()))
+	}
+}
+
 // handle manages the provided client connection, handling authentication and packet processing.
 func (a *API) handle(c *Client, id int64) {
 	addr := c.conn.RemoteAddr().String()
@@ -176,9 +184,6 @@ func (a *API) handle(c *Client, id int64) {
 			return
 		default:
 		}
-		a.logger.Info("Current address", a.listener.Addr().String())
-		a.logger.Info("Total sessions loaded", "count", len(a.registry.GetSessions()))
-
 		pk, err := c.ReadPacket()
 		if err != nil {
 			if !errors.Is(err, io.EOF) {
